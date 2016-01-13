@@ -24,6 +24,7 @@ public:
     Vec2 tileCoordForPosition(Vec2 position);
     Vec2 positionForTileCoord(Vec2 tileCoord);
     
+    bool isValidTileCoord(Vec2 tileCoord);
     bool isWallAtTileCoord(Vec2 tileCoord);
     bool isBoneAtTilecoord(Vec2 tileCoord);
     bool isDogAtTilecoord(Vec2 tileCoord);
@@ -39,7 +40,6 @@ public:
     virtual void update(float delta) override;
     
 private:
-    bool isValidTileCoord(Vec2 tileCoord);
     bool hasProperty(std::string name, Vec2 tileCoord, cocos2d::TMXLayer *layer);
     
     bool onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event);

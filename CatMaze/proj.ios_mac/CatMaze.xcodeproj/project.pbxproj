@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		196FC4C51C4529A900AA56DB /* PathFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 196FC4C31C4529A900AA56DB /* PathFinder.cpp */; };
+		196FC4C81C45351800AA56DB /* Graph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 196FC4C61C45351800AA56DB /* Graph.cpp */; };
 		197397E21C44B283002B6FE8 /* CatMaze.tps in Resources */ = {isa = PBXBuildFile; fileRef = 197397AB1C44B283002B6FE8 /* CatMaze.tps */; };
 		197397E31C44B283002B6FE8 /* Arial-hd.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 197397AD1C44B283002B6FE8 /* Arial-hd.fnt */; };
 		197397E41C44B283002B6FE8 /* Arial-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 197397AE1C44B283002B6FE8 /* Arial-hd.png */; };
@@ -155,6 +157,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		196E0B061C461A3000576B99 /* scratch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = scratch.cpp; sourceTree = "<group>"; };
+		196E0B071C461A3000576B99 /* scratch.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = scratch.hpp; sourceTree = "<group>"; };
+		196FC4C31C4529A900AA56DB /* PathFinder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PathFinder.cpp; sourceTree = "<group>"; };
+		196FC4C41C4529A900AA56DB /* PathFinder.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = PathFinder.hpp; sourceTree = "<group>"; };
+		196FC4C61C45351800AA56DB /* Graph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Graph.cpp; sourceTree = "<group>"; };
+		196FC4C71C45351800AA56DB /* Graph.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Graph.hpp; sourceTree = "<group>"; };
 		197397AB1C44B283002B6FE8 /* CatMaze.tps */ = {isa = PBXFileReference; lastKnownFileType = file; path = CatMaze.tps; sourceTree = "<group>"; };
 		197397AD1C44B283002B6FE8 /* Arial-hd.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Arial-hd.fnt"; sourceTree = "<group>"; };
 		197397AE1C44B283002B6FE8 /* Arial-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Arial-hd.png"; sourceTree = "<group>"; };
@@ -499,6 +507,12 @@
 				46880B8719C43A87006E1F66 /* HelloWorldScene.h */,
 				197398161C44C3A4002B6FE8 /* CatSprite.cpp */,
 				197398171C44C3A4002B6FE8 /* CatSprite.hpp */,
+				196FC4C31C4529A900AA56DB /* PathFinder.cpp */,
+				196FC4C41C4529A900AA56DB /* PathFinder.hpp */,
+				196FC4C61C45351800AA56DB /* Graph.cpp */,
+				196FC4C71C45351800AA56DB /* Graph.hpp */,
+				196E0B061C461A3000576B99 /* scratch.cpp */,
+				196E0B071C461A3000576B99 /* scratch.hpp */,
 			);
 			name = Classes;
 			path = ../Classes;
@@ -747,8 +761,10 @@
 				197398181C44C3A4002B6FE8 /* CatSprite.cpp in Sources */,
 				46880B8A19C43A87006E1F66 /* HelloWorldScene.cpp in Sources */,
 				503AE10017EB989F00D1A890 /* AppController.mm in Sources */,
+				196FC4C81C45351800AA56DB /* Graph.cpp in Sources */,
 				503AE10217EB989F00D1A890 /* RootViewController.mm in Sources */,
 				503AE10117EB989F00D1A890 /* main.m in Sources */,
+				196FC4C51C4529A900AA56DB /* PathFinder.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
