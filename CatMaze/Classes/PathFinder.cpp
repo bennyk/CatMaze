@@ -10,7 +10,12 @@
 
 using namespace cocos2d;
 
-int PathFinder::find(Graph &g, Node start, Node end, std::function<int(Node &)> heuristic)
+int PathFinder::find(Graph *g, Node start, Node end, std::function<void (Connection &conn)> block)
+{
+    return find(g, start, end, ManhattanDistance(end), block);
+}
+
+int PathFinder::find(Graph *g, Node start, Node end, std::function<int(Node &)> heuristic, std::function<void (Connection &conn)> block)
 {
     bool verbose = true;
     
@@ -30,7 +35,7 @@ int PathFinder::find(Graph &g, Node start, Node end, std::function<int(Node &)> 
             break;
         }
         
-        auto connections = g.getConnections(currentTrace._node);
+        auto connections = g->getConnections(currentTrace._node);
         for (auto &connection : connections) {
             auto toNode = connection._to;
             auto toNodeCost = currentTrace._costSoFar + connection.getCost();
@@ -80,10 +85,28 @@ int PathFinder::find(Graph &g, Node start, Node end, std::function<int(Node &)> 
     }
     
     if (currentTrace._node != end) {
-        // found
+        // not found
+        
         return -1;
     }
     // compile the list
+    
+    std::stack<Connection> stack;
+    auto currentNode = currentTrace._node;
+    while (currentNode != start) {
+//        CCLOG("%s", currentTrace._connection.getDesc().c_str());
+        stack.push(currentTrace._connection);
+        currentNode = currentTrace._connection._from;
+        auto iter = _closed.find(currentNode);
+        currentTrace = *iter;
+    }
+    
+    while (stack.size()) {
+        auto conn = stack.top();
+        CCLOG("%s", conn.getDesc().c_str());
+        block(conn);
+        stack.pop();
+    }
     
     return 0;
 }

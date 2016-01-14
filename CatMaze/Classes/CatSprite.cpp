@@ -33,6 +33,10 @@ bool CatSprite::initWithScene(HelloWorldScene *scene)
         _facingLeftAnimation = createCatAnimation("left");
         _facingRightAnimation = createCatAnimation("right");
         _numBones = 0;
+        
+        // init walking animator
+        _walkingAnimator._sprite = this;
+        
         return true;
     }
     return false;
@@ -65,6 +69,29 @@ void CatSprite::runAnimation(cocos2d::Animation *animation)
 }
 
 void CatSprite::moveToward(cocos2d::Vec2 target)
+{
+    auto fromTileCoord = _scene->tileCoordForPosition(getPosition());
+    auto toTileCoord = _scene->tileCoordForPosition(target);
+    if (fromTileCoord == toTileCoord) {
+        CCLOG("you're already there!");
+        return;
+    }
+    
+    if (_scene->isWallAtTileCoord(toTileCoord)) {
+        SimpleAudioEngine::getInstance()->playEffect("hitWall.wav");
+        return;
+    }
+    
+    _walkingAnimator._sprite = this;
+    _walkingAnimator.clear();
+    _scene->findPath(fromTileCoord, toTileCoord, [this](Graph::Connection &conn) {
+        _walkingAnimator.pushBack(conn);
+    });
+    
+    _walkingAnimator.runAnimation();
+}
+
+void CatSprite::moveToward2(cocos2d::Vec2 target)
 {
     Vec2 diff = target - getPosition();
     Vec2 desiredTileCoord = _scene->tileCoordForPosition(getPosition());
@@ -115,3 +142,40 @@ void CatSprite::moveToward(cocos2d::Vec2 target)
         SimpleAudioEngine::getInstance()->playEffect("step.wav");
     }
 }
+
+// WalkingAnimator
+
+void CatSprite::WalkingAnimator::runAnimation()
+{
+    auto conn = _conns.front();
+    _conns.pop_front();
+    
+    auto delta = conn._to._loc - conn._from._loc;
+    if (delta.x > 0) {
+        _sprite->runAnimation(_sprite->_facingRightAnimation);
+    }
+    else if (delta.x < 0) {
+        _sprite->runAnimation(_sprite->_facingLeftAnimation);
+    }
+    
+    if (delta.y > 0) {
+        _sprite->runAnimation(_sprite->_facingForwardAnimation);
+    }
+    else if (delta.y < 0) {
+        _sprite->runAnimation(_sprite->_facingBackAnimation);
+    }
+    
+    Vec2 toLoc = conn._to._loc;
+    auto move = MoveTo::create(.2, _sprite->_scene->positionForTileCoord(conn._to._loc));
+    
+    Vector<FiniteTimeAction *> seq;
+    seq.pushBack(move);
+    
+    if (_conns.size() > 0) {
+        seq.pushBack(CallFunc::create([this]() {
+            this->runAnimation();
+        }));
+    }
+    _sprite->runAction(Sequence::create(seq));
+}
+

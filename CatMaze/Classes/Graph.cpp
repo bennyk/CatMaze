@@ -15,6 +15,23 @@ using Connection = Graph::Connection;
 const Connection Connection::NONE {Vec2{-1,-1}, Vec2{-1,-1}};
 const Graph::Node Graph::Node::INVALID {Vec2{-1,-1}};
 
+std::shared_ptr<Graph>
+Graph::createWithScene(HelloWorldScene *scene)
+{
+    auto result = std::make_shared<Graph>();
+    if (result && result->init(scene))
+    {
+        return result;
+    }
+    CC_ASSERT(false);
+}
+
+bool
+Graph::init(HelloWorldScene *scene)
+{
+    _scene = scene;
+    return true;
+}
 
 std::vector<Connection>
 Graph::getConnections(Node &node)

@@ -1,6 +1,8 @@
 #include "HelloWorldScene.h"
 
 #include "CatSprite.hpp"
+#include "PathFinder.hpp"
+
 #include "SimpleAudioEngine.h"
 using namespace CocosDenshion;
 
@@ -60,6 +62,8 @@ bool HelloWorldScene::init()
     _cat->setPosition(spawnPos);
     addChild(_cat);
     
+    // create a graph representation for our path finder.
+    _graph = Graph::createWithScene(this);
     
     auto eventListener = EventListenerTouchOneByOne::create();
     eventListener->onTouchBegan = CC_CALLBACK_2(HelloWorldScene::onTouchBegan, this);
@@ -161,6 +165,12 @@ void HelloWorldScene::winGame()
 void HelloWorldScene::loseGame()
 {
     CCLOG("loseGame()");
+}
+
+void HelloWorldScene::findPath(cocos2d::Vec2 startTileCoord, cocos2d::Vec2 toTileCoord, std::function<void (Graph::Connection &conn)> block)
+{
+    PathFinder finder;
+    finder.find(_graph.get(), startTileCoord, toTileCoord, block);
 }
 
 void HelloWorldScene::removeObjectAtTileCoord(cocos2d::Vec2 tileCoord)

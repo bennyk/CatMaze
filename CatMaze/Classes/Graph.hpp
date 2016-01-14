@@ -31,6 +31,13 @@ public:
             return _loc != rhs._loc;
         }
         
+        std::string getDesc() const
+        {
+            std::stringstream ss;
+            ss << "{" << _loc.x << "," << _loc.y << "}";
+            return ss.str();
+        }
+        
         static const Node INVALID;
         
     };
@@ -48,6 +55,13 @@ public:
             return tt;
         }
         
+        std::string getDesc() const
+        {
+            std::stringstream ss;
+            ss << _from.getDesc() << "->" << _to.getDesc();
+            return ss.str();
+        }
+        
         static const Connection NONE;
     };
     
@@ -56,6 +70,9 @@ public:
     static std::shared_ptr<Graph> createWithScene(HelloWorldScene *scene);
     
     std::vector<Connection> getConnections(Node &node);
+    
+private:
+    bool init(HelloWorldScene *scene);
     
 private:
     HelloWorldScene *_scene;

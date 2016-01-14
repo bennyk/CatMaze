@@ -9,13 +9,17 @@
 #ifndef CatSprite_hpp
 #define CatSprite_hpp
 
-class HelloWorldScene;
+#include "Graph.hpp"
+#include "HelloWorldScene.h"
 
 class CatSprite : public cocos2d::Sprite
 {
+    using Connection = Graph::Connection;
+    
 public:
     static CatSprite* createWithScene(HelloWorldScene *scene);
     void moveToward(cocos2d::Vec2 target);
+    void moveToward2(cocos2d::Vec2 target);
     
 private:
     bool initWithScene(HelloWorldScene *scene);
@@ -36,6 +40,19 @@ private:
     cocos2d::ActionInterval *_curAnimateAction;
 
     int _numBones;
+    
+private:
+    struct WalkingAnimator
+    {
+        CatSprite *_sprite;
+        std::list<Connection> _conns;
+        
+        void runAnimation();
+        void pushBack(Connection &conn) { _conns.push_back(conn); }
+        void clear() { _conns.clear(); }
+    };
+    
+    WalkingAnimator _walkingAnimator;
 
 };
 

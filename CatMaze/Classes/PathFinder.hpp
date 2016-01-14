@@ -16,7 +16,12 @@ class PathFinder
     using Graph = Graph;
     using Node = Graph::Node;
     using Connection = Graph::Connection;
+ 
+public:
+    int find(Graph *g, Node start, Node end, std::function<void (Connection &conn)> block);
+    int find(Graph *g, Node start, Node end, std::function<int(Node &)> heuristic, std::function<void (Connection &conn)> block);
     
+private:
     class ManhattanDistance {
     public:
         ManhattanDistance(Node &target) : _target(target){}
@@ -102,9 +107,7 @@ class PathFinder
         
     };
     
-    
-    int find(Graph &g, Node start, Node end, std::function<int(Node &)> heuristic);
-    
+
 private:
     
     PriorityQueue _open, _closed;
