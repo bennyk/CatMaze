@@ -43,7 +43,7 @@ private:
         NodeTrace(Node &node, const Connection &conn, int costSoFar, int estimatedTotalCost)
         : _node(node), _connection(conn), _costSoFar(costSoFar), _estimatedTotalCost(estimatedTotalCost) {}
         
-        NodeTrace(const NodeTrace &rhs) : _node(rhs._node), _connection(rhs._connection), _costSoFar {0}, _estimatedTotalCost {0} {}
+        NodeTrace(const NodeTrace &rhs) : _node(rhs._node), _connection(rhs._connection), _costSoFar {rhs._costSoFar}, _estimatedTotalCost {rhs._estimatedTotalCost} {}
         
         int compare(NodeTrace &rhs) const
         {
