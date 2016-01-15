@@ -47,7 +47,7 @@ private:
         CatSprite *_sprite;
         std::list<Connection> _conns;
         
-        void runAnimation();
+        void runAnimation(std::function<void (Connection &conn)> block);
         void pushBack(Connection &conn) { _conns.push_back(conn); }
         void clear() { _conns.clear(); }
     };

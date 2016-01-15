@@ -88,7 +88,35 @@ void CatSprite::moveToward(cocos2d::Vec2 target)
         _walkingAnimator.pushBack(conn);
     });
     
-    _walkingAnimator.runAnimation();
+    _walkingAnimator.runAnimation([this] (Connection &conn) {
+        
+        auto toTileCoord = conn._to._loc;
+        if (_scene->isWallAtTileCoord(toTileCoord)) {
+            SimpleAudioEngine::getInstance()->playEffect("hitWall.wav");
+        }
+        
+        if (_scene->isBoneAtTilecoord(toTileCoord)) {
+            SimpleAudioEngine::getInstance()->playEffect("pickup.wav");
+            _numBones++;
+            _scene->showNumBones(_numBones);
+            _scene->removeObjectAtTileCoord(toTileCoord);
+        }
+        else if (_scene->isDogAtTilecoord(toTileCoord)) {
+            if (_numBones == 0) {
+                _scene->loseGame();
+            } else {
+                _numBones--;
+                _scene->showNumBones(_numBones);
+                _scene->removeObjectAtTileCoord(toTileCoord);
+                SimpleAudioEngine::getInstance()->playEffect("catAttack.wav");
+            }
+        }
+        else if (_scene->isExitAtTilecoord(toTileCoord)) {
+            _scene->winGame();
+        } else {
+            SimpleAudioEngine::getInstance()->playEffect("step.wav");
+        }
+    });
 }
 
 void CatSprite::moveToward2(cocos2d::Vec2 target)
@@ -145,10 +173,13 @@ void CatSprite::moveToward2(cocos2d::Vec2 target)
 
 // WalkingAnimator
 
-void CatSprite::WalkingAnimator::runAnimation()
+void CatSprite::WalkingAnimator::runAnimation(std::function<void (Connection &conn)> block)
 {
     auto conn = _conns.front();
     _conns.pop_front();
+    
+    // update game logics for the current connection.
+    block(conn);
     
     auto delta = conn._to._loc - conn._from._loc;
     if (delta.x > 0) {
@@ -172,8 +203,8 @@ void CatSprite::WalkingAnimator::runAnimation()
     seq.pushBack(move);
     
     if (_conns.size() > 0) {
-        seq.pushBack(CallFunc::create([this]() {
-            this->runAnimation();
+        seq.pushBack(CallFunc::create([this, block]() {
+            this->runAnimation(block);
         }));
     }
     _sprite->runAction(Sequence::create(seq));
