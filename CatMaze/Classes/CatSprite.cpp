@@ -104,6 +104,7 @@ void CatSprite::moveToward(cocos2d::Vec2 target)
         else if (_scene->isDogAtTilecoord(toTileCoord)) {
             if (_numBones == 0) {
                 _scene->loseGame();
+                return false;
             } else {
                 _numBones--;
                 _scene->showNumBones(_numBones);
@@ -116,6 +117,8 @@ void CatSprite::moveToward(cocos2d::Vec2 target)
         } else {
             SimpleAudioEngine::getInstance()->playEffect("step.wav");
         }
+        
+        return true;
     });
 }
 
@@ -173,13 +176,15 @@ void CatSprite::moveToward2(cocos2d::Vec2 target)
 
 // WalkingAnimator
 
-void CatSprite::WalkingAnimator::runAnimation(std::function<void (Connection &conn)> block)
+void CatSprite::WalkingAnimator::runAnimation(std::function<bool (Connection &conn)> block)
 {
     auto conn = _conns.front();
     _conns.pop_front();
     
     // update game logics for the current connection.
-    block(conn);
+    if (!block(conn)) {
+        return;
+    }
     
     auto delta = conn._to._loc - conn._from._loc;
     if (delta.x > 0) {
