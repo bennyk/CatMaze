@@ -14,4 +14,4 @@ I am learning as well hence any implementation comments are gratefully welcome.
 
 ### References
 
-Further references about Astar beyond the tutorial you might find Amit's [page] (http://theory.stanford.edu/~amitp/GameProgramming/) to be resourceful. Finally any good book about game AI should do the job. The current implementation made reference to the pseudo code outline in this [book] (http://ai4g.com/). You might want to check it out too.
+For further references about Astar algorithm beyond the tutorial here, you might find Amit's [page] (http://theory.stanford.edu/~amitp/GameProgramming/) to be resourceful. Finally any good book about game AI should do the job. The current implementation made reference to the pseudo code outline in this [book] (http://ai4g.com/). You might want to check it out too.
