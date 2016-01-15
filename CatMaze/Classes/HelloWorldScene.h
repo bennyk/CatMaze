@@ -51,6 +51,10 @@ private:
     void onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event) override;
     void onTouchCancelled(cocos2d::Touch *touch, cocos2d::Event *unused_event) override;
     
+    void showRestartMenu();
+    void restartTapped(cocos2d::Ref *sender);
+    void endScene();
+    
 private:
     TMXTiledMap *_tileMap;
     TMXLayer *_bgLayer, *_objectLayer;
@@ -58,6 +62,10 @@ private:
     
     // graph representation for path finder.
     std::shared_ptr<Graph> _graph;
+    
+    Label *_bonesCount;
+    
+    bool _won, _gameOver;
 };
 
 #endif // __HELLOWORLD_SCENE_H__

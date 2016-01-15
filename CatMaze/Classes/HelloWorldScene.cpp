@@ -60,7 +60,13 @@ bool HelloWorldScene::init()
     _cat = CatSprite::createWithScene(this);
     _cat->retain();
     _cat->setPosition(spawnPos);
-    addChild(_cat);
+    _tileMap->addChild(_cat);
+    
+    
+    auto winSize = Director::getInstance()->getWinSize();
+    _bonesCount = Label::createWithSystemFont("Bones: 0", "Arial", 24);
+    _bonesCount->setPosition(winSize.width * .1, winSize.height * .95);
+    addChild(_bonesCount);
     
     // create a graph representation for our path finder.
     _graph = Graph::createWithScene(this);
@@ -73,6 +79,10 @@ bool HelloWorldScene::init()
     this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(eventListener, this);
     
     scheduleUpdate();
+    
+    // init vars
+    _won = false;
+    _gameOver = false;
     
     return true;
 }
@@ -89,7 +99,7 @@ void HelloWorldScene::setViewPointCenter(Vec2 position)
     auto actualPosition = Vec2 {x, y};
     auto centerOfView = Vec2(winSize.width/2, winSize.height/2);
     Vec2 viewPoint = centerOfView - actualPosition;
-    setPosition(viewPoint);
+    _tileMap->setPosition(viewPoint);
 }
 
 Vec2 HelloWorldScene::tileCoordForPosition(cocos2d::Vec2 position)
@@ -155,16 +165,29 @@ bool HelloWorldScene::hasProperty(std::string name, cocos2d::Vec2 tileCoord, coc
 void HelloWorldScene::showNumBones(int numBones)
 {
     CCLOG("showNumBones(%d)", numBones);
+    _bonesCount->setString("Bones: " + std::to_string(numBones));
 }
 
 void HelloWorldScene::winGame()
 {
     CCLOG("winGame()");
+    
+    _gameOver = true;
+    _won = true;
+    
+    SimpleAudioEngine::getInstance()->playEffect("win.wav");
+    endScene();
 }
 
 void HelloWorldScene::loseGame()
 {
     CCLOG("loseGame()");
+    
+    _gameOver = true;
+    _won = false;
+    
+    SimpleAudioEngine::getInstance()->playEffect("lose.wav");
+    endScene();
 }
 
 void HelloWorldScene::findPath(cocos2d::Vec2 startTileCoord, cocos2d::Vec2 toTileCoord, std::function<void (Graph::Connection &conn)> block)
@@ -180,7 +203,8 @@ void HelloWorldScene::removeObjectAtTileCoord(cocos2d::Vec2 tileCoord)
 
 bool HelloWorldScene::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event)
 {
-//    if (_gameOver) return NO;
+    if (_gameOver)
+        return false;
     
     Vec2 touchLocation = _tileMap->convertTouchToNodeSpace(touch);
     _cat->moveToward(touchLocation);
@@ -213,4 +237,54 @@ void HelloWorldScene::menuCloseCallback(Ref* pSender)
     exit(0);
 #endif
 }
+
+void HelloWorldScene::endScene()
+{
+    _cat->runAction(Sequence::create(
+                                     ScaleBy::create(.5, 3.0),
+                                     DelayTime::create(1.0),
+                                     ScaleTo::create(.5, 0),
+                                     CallFunc::create([this]() {
+        this->showRestartMenu();
+    }), nullptr));
+    
+    _cat->runAction(RepeatForever::create(RotateBy::create(.5, 360)));
+}
+
+void HelloWorldScene::showRestartMenu()
+{
+    std::string message;
+    if (_won) {
+        message = "You win!";
+    } else {
+        message = "You lose!";
+    }
+    
+    auto label = Label::createWithSystemFont(message, "Arial", 24);
+    label->setScale(.1);
+    
+    auto winSize = Director::getInstance()->getWinSize();
+    label->setPosition(winSize.width/2, winSize.height * 0.6);
+    addChild(label);
+    
+    auto restartLabel = Label::createWithSystemFont("Restart", "Arial", 24);
+    
+    auto restartItem = MenuItemLabel::create(restartLabel, CC_CALLBACK_1(HelloWorldScene::restartTapped, this));
+    restartItem->setPosition(winSize.width/2, winSize.height * 0.4);
+    restartItem->setScale(.1);
+    
+    auto menu = Menu::createWithItem(restartItem);
+    menu->setPosition(Vec2::ZERO);
+    addChild(menu, 10);
+    
+    restartItem->runAction(ScaleTo::create(.5, 1.0));
+    label->runAction(ScaleTo::create(.5, 1.0));
+}
+
+void HelloWorldScene::restartTapped(cocos2d::Ref *sender)
+{
+    auto newScene = HelloWorldScene::createScene();
+    Director::getInstance()->replaceScene(TransitionZoomFlipX::create(.5, newScene));
+}
+
 
