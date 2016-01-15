@@ -49,6 +49,17 @@ private:
         {
             return _estimatedTotalCost - rhs._estimatedTotalCost;
         }
+        
+        std::string getDesc() const
+        {
+            std::stringstream ss;
+            ss << "NodeTrace {"
+            << "node " << _node.getDesc()
+            << " connection " << _connection.getDesc()
+            << " costSoFar " << _costSoFar
+            << " estimatedTotalCost " << _estimatedTotalCost << "}";
+            return ss.str();
+        }
     };
     
     struct Compare {
