@@ -36,6 +36,7 @@ bool CatSprite::initWithScene(HelloWorldScene *scene)
         
         // init walking animator
         _walkingAnimator._sprite = this;
+        _walkingAnimator.clear();
         
         return true;
     }
@@ -70,6 +71,11 @@ void CatSprite::runAnimation(cocos2d::Animation *animation)
 
 void CatSprite::moveToward(cocos2d::Vec2 target)
 {
+    if (_walkingAnimator.isBusy()) {
+        CCLOG("Walking animator is busy. Stopping for good.");
+        _walkingAnimator.stop();
+        return;
+    }
     auto fromTileCoord = _scene->tileCoordForPosition(getPosition());
     auto toTileCoord = _scene->tileCoordForPosition(target);
     if (fromTileCoord == toTileCoord) {
@@ -82,7 +88,6 @@ void CatSprite::moveToward(cocos2d::Vec2 target)
         return;
     }
     
-    _walkingAnimator._sprite = this;
     _walkingAnimator.clear();
     _scene->findPath(fromTileCoord, toTileCoord, [this](Graph::Connection &conn) {
         _walkingAnimator.pushBack(conn);
@@ -178,6 +183,11 @@ void CatSprite::moveToward2(cocos2d::Vec2 target)
 
 void CatSprite::WalkingAnimator::runAnimation(std::function<bool (Connection &conn)> block)
 {
+    if (_stop) {
+        CCLOG("Animator has been interrupted. Stopping...");
+        return;
+    }
+    
     auto conn = _conns.front();
     _conns.pop_front();
     

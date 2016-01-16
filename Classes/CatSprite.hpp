@@ -46,10 +46,16 @@ private:
     {
         CatSprite *_sprite;
         std::list<Connection> _conns;
-        
+        bool _stop;
+                
         void runAnimation(std::function<bool (Connection &conn)> block);
         void pushBack(Connection &conn) { _conns.push_back(conn); }
-        void clear() { _conns.clear(); }
+        void clear() {
+            _conns.clear();
+            _stop = false;
+        }
+        bool isBusy() { return _conns.size() > 0 && !_stop; }
+        void stop() { _stop = true; }
     };
     
     WalkingAnimator _walkingAnimator;
