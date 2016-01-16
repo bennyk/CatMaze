@@ -44,14 +44,15 @@ public:
     struct Connection
     {
         Node _from, _to;
+        float _baseCost;
         
-        Connection() : _from {}, _to {} {}
-        Connection(cocos2d::Vec2 p0, cocos2d::Vec2 p1) : _from(p0), _to(p1) {}
-        Connection(const Connection &rhs) : _from(rhs._from), _to(rhs._to) {}
+        Connection() : _from {}, _to {}, _baseCost {0} {}
+        Connection(cocos2d::Vec2 p0, cocos2d::Vec2 p1, float baseCost) : _from(p0), _to(p1), _baseCost(baseCost) {}
+        Connection(const Connection &rhs) : _from(rhs._from), _to(rhs._to), _baseCost {rhs._baseCost} {}
         
         float getCost() const
         {
-            auto tt = _from._loc.getDistance(_to._loc);
+            auto tt = _from._loc.getDistance(_to._loc) + _baseCost;
             return tt;
         }
         
